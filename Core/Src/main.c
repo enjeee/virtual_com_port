@@ -46,8 +46,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-
-UART_HandleTypeDef huart3;
+/* Missing UART handler declaration here*/
 
 /* USER CODE BEGIN PV */
 
@@ -57,7 +56,7 @@ UART_HandleTypeDef huart3;
 void SystemClock_Config(void);
 static void MPU_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_USART3_UART_Init(void);
+static void USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -99,18 +98,22 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART3_UART_Init();
+  USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+   /* The following lines produce a runtime error, fix them */
   /* Output a message on Hyperterminal using printf function */
-    printf("\n\r UART Printf Example: retarget the C library printf function to the UART\n\r");
-    printf("** Test finished successfully. ** \n\r");
+  printf("\n\r UART Printf Example: retarget the C library printf function to the UART"); // Is something missing? 
+  printf("** Test finished successfully. **");
+
   while (1)
   {
+    // Print the following message: Hello IEE3...
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -185,46 +188,37 @@ void SystemClock_Config(void)
   * @param None
   * @retval None
   */
-static void MX_USART3_UART_Init(void)
+static void USART3_UART_Init(void)
 {
 
-  /* USER CODE BEGIN USART3_Init 0 */
-
-  /* USER CODE END USART3_Init 0 */
-
-  /* USER CODE BEGIN USART3_Init 1 */
-
-  /* USER CODE END USART3_Init 1 */
-  huart3.Instance = USART3;
-  huart3.Init.BaudRate = 115200;
-  huart3.Init.WordLength = UART_WORDLENGTH_8B;
-  huart3.Init.StopBits = UART_STOPBITS_1;
-  huart3.Init.Parity = UART_PARITY_NONE;
-  huart3.Init.Mode = UART_MODE_TX_RX;
-  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
-  huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-  huart3.Init.ClockPrescaler = UART_PRESCALER_DIV1;
-  huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-  if (HAL_UART_Init(&huart3) != HAL_OK)
+  /*##-1- Configure the UART peripheral ######################################*/
+  /* Put the USART peripheral in the Asynchronous mode (UART Mode) */
+  /* UART configured as follows:
+      - Word Length = 7 data bit + 1 parity bit:
+	                  BE CAREFUL : Program 7 data bits + 1 parity bit in PC HyperTerminal
+      - Stop Bit    = One Stop bit
+      - Parity      = ODD parity
+      - Baudrate: 
+        - USARTDIV = 0x45
+        - USART Kernel Clock = 8000 KHz
+      - Mode: STM32 sends USART messages to HyperTerminal
+      - Hardware flow control disabled (RTS and CTS signals) 
+      - Oversampling = 16
+      --> Hint: check the Init structure to see the corresponding elements
+      Note: Any unused features must be set to a known state (not used by default) */
+  
+  UartHandle.Instance            = USART3;
+  
+  //UartHandle.init ....
+  
+  // Uncomment and fix the follwing line 
+//  UartHandle.AdvancedInit.AdvFeatureInit // check UART_Advanced_Features_Initialization_Type in stm32h7xx_hal_uart.h 
+  // Uncomment and fix the following block
+  /*if(HAL_UART_Init() != HAL_OK)
   {
+    /* Initialization Error 
     Error_Handler();
-  }
-  if (HAL_UARTEx_SetTxFifoThreshold(&huart3, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_UARTEx_SetRxFifoThreshold(&huart3, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_UARTEx_DisableFifoMode(&huart3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USART3_Init 2 */
-
-  /* USER CODE END USART3_Init 2 */
+  }*/
 
 }
 
@@ -253,9 +247,11 @@ static void MX_GPIO_Init(void)
   */
 PUTCHAR_PROTOTYPE
 {
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the USART1 and Loop until the end of transmission */
-  HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
+  // The following line produces a runtime error fix it
+  // Comment this line properly; describe each functional parameter
+
+  /* This function uses the USART to transmit one character at a time */
+  HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 10, 0xFFFF);
 
   return ch;
 }

@@ -105,15 +105,21 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     __HAL_RCC_USART3_CLK_ENABLE();
 
     __HAL_RCC_GPIOD_CLK_ENABLE();
+
+    // The following lines produce a runtime error
+    // Comment the code block appropriately
+
     /**USART3 GPIO Configuration
     PD8     ------> USART3_TX
     PD9     ------> USART3_RX
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pin = GPIO_pin_8|GPIO_pin_9;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT; // Is this the right mode? 
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
+    // Set the pin speed to Low 
+    
+    // Determine the AF number corresponding to this GPIO pin functionality 
+    GPIO_InitStruct.Alternate = GPIO_AF7_USART3; // What the AF number?
     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /* USER CODE BEGIN USART3_MspInit 1 */
